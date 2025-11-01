@@ -125,13 +125,19 @@ class DashboardController extends Controller
 
     public function getAvailableSpace()
     {
-        $totalSpace = disk_total_space ('C:');
-        $freeSpace  = disk_free_space('C:');
+        // Detect OS and set the correct disk path
+        $path = strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' ? 'C:' : '/';
+
+        $totalSpace = disk_total_space($path);
+        $freeSpace  = disk_free_space($path);
 
         $totalFilDirectory = $this->recursiveDirectorySize(storage_path('app'));
 
-        return ['freeSpace' => $freeSpace, 'totalFilDirectory' => $totalFilDirectory[0], 'filesCount'=>$totalFilDirectory[1]];
-
+        return [
+            'freeSpace' => $freeSpace,
+            'totalFilDirectory' => $totalFilDirectory[0],
+            'filesCount' => $totalFilDirectory[1],
+        ];
     }
 
     function recursiveDirectorySize($directory)
