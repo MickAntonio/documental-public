@@ -79,7 +79,8 @@ services:
       - "8087:8080"
     depends_on:
       - db
+    volumes:
+      - ./keycloak-cert:/opt/keycloak/certs
 
 volumes:
   db_data:
-  - ./keycloak-cert:/opt/keycloak/certs
