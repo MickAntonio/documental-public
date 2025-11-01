@@ -15,16 +15,7 @@ RUN apt-get update && apt-get install -y \
     libfreetype6-dev \
     unzip \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install gd pdo pdo_mysql zip
-
-
-RUN apt-get update && apt-get install -y openssl && \
-    mkdir -p /opt/keycloak/certs && \
-    openssl req -x509 -newkey rsa:2048 -nodes \
-      -keyout /opt/keycloak/certs/server.key \
-      -out /opt/keycloak/certs/server.crt \
-      -days 365 \
-      -subj "/CN=localhost"    
+    && docker-php-ext-install gd pdo pdo_mysql zip   
 
 RUN a2enmod rewrite
 
