@@ -23,6 +23,12 @@ services:
       DB_DATABASE: documental_db
       DB_USERNAME: root
       DB_PASSWORD: ""
+      KEYCLOAK_REALM_PUBLIC_KEY: ""
+      REALM_NAME: "documental"
+      REALM_ADMIN_USER: "user"
+      REALM__ADMIN_PASSWORD: "1234"
+      REALM_CLIENT_ID: "documental-client"
+      REALM_BASE_URL: "https://16.16.96.8:8081"
     depends_on:
       - db
     command: >
