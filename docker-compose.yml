@@ -13,8 +13,10 @@ services:
       - .:/var/www/html
       - /var/www/html/vendor
     environment:
+      APP_NAME: "Gestão Documental"
       APP_ENV: local
       APP_DEBUG: "true"
+      APP_KEY: "base64:voj1iLlkor+s1cm1LcaQPOI5LKVdWAbmOa0rk1ZNNT4="
       DB_CONNECTION: mysql
       DB_HOST: db
       DB_PORT: 3306
@@ -23,6 +25,10 @@ services:
       DB_PASSWORD: ""
     depends_on:
       - db
+    command: >
+      bash -c "chown -R www-data:www-data storage bootstrap/cache &&
+              chmod -R 775 storage bootstrap/cache &&
+              apache2-foreground"
 
   db:
     image: mysql:8.0
