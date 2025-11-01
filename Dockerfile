@@ -2,7 +2,7 @@ FROM composer:2.7 AS build
 
 WORKDIR /app
 COPY . .
-RUN composer install --no-dev --optimize-autoloader --no-interaction --no-progress
+RUN composer install --optimize-autoloader --no-interaction --no-progress
 
 FROM php:8.2-apache
 
