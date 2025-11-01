@@ -57,30 +57,5 @@ services:
       PMA_PASSWORD: 
       PMA_ARBITRARY: 1
 
-  keycloak:
-    image: quay.io/keycloak/keycloak:24.0.5-0
-    container_name: documental-keycloak
-    restart: always
-    environment:
-      KC_DB: mysql
-      KC_DB_URL_HOST: db
-      KC_DB_URL_DATABASE: documental_db
-      KC_DB_USERNAME: root
-      KC_DB_PASSWORD: ""
-      KEYCLOAK_ADMIN: admin
-      KEYCLOAK_ADMIN_PASSWORD: admin
-      # Enable HTTPS
-      KC_HTTPS_CERTIFICATE_FILE: /opt/keycloak/certs/server.crt
-      KC_HTTPS_CERTIFICATE_KEY_FILE: /opt/keycloak/certs/server.key
-      KC_PROXY: edge
-    command:
-      - start-dev
-    ports:
-      - "8087:8080"
-    depends_on:
-      - db
-    volumes:
-      - ./keycloak-cert:/opt/keycloak/certs
-
 volumes:
   db_data:
