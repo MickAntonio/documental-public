@@ -248,16 +248,25 @@ class DashboardController extends Controller
         return $data;
     }
 
-    public function getTiposDocumentosEspaco($tipo){
-
+    public function getTiposDocumentosEspaco($tipo)
+    {
         $data = [];
         $fornecedores = Tipo::orderBy('id', 'desc')->get('nome')->pluck('nome');
-        foreach($fornecedores as $value){
-            $dataSize = $this->recursiveDirectorySize(storage_path('app').'\uploads\registos\documentos\\'.$value);
-            if($tipo=='DOCUMENTOS'){
-                $data[] = $this->bytesToGigabytes($dataSize[0]);
-            }else{
-                $data[] = $dataSize[1];
+
+        foreach ($fornecedores as $value) {
+            $path = storage_path('app') . '/uploads/registos/documentos/' . $value;
+
+            // Check if directory exists before calling recursiveDirectorySize
+            if (is_dir($path)) {
+                $dataSize = $this->recursiveDirectorySize($path);
+                if ($tipo == 'DOCUMENTOS') {
+                    $data[] = $this->bytesToGigabytes($dataSize[0]);
+                } else {
+                    $data[] = $dataSize[1];
+                }
+            } else {
+                // Directory does not exist, return 0
+                $data[] = 0;
             }
         }
 
