@@ -69,9 +69,10 @@ services:
       KC_DB_PASSWORD: ""
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: admin
+      # Enable HTTPS
+      KC_HTTPS_CERTIFICATE_FILE: /opt/keycloak/certs/server.crt
+      KC_HTTPS_CERTIFICATE_KEY_FILE: /opt/keycloak/certs/server.key
       KC_PROXY: edge
-      KC_HOSTNAME_STRICT_HTTPS: "false"
-      KC_HOSTNAME_STRICT: "false"
     command:
       - start-dev
     ports:
@@ -81,3 +82,4 @@ services:
 
 volumes:
   db_data:
+  - ./keycloak-cert:/opt/keycloak/certs
