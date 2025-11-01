@@ -17,8 +17,8 @@ servers:
     description: local server
   - url: http://dev.api.documental.kaila.co.ao
     description: development server
-  - url: http://dev.api.documental.kaila.co.ao
-    description: development server
+  - url: http://16.16.96.8:8085
+    description: development server aws
 
 paths:
   /templates:
