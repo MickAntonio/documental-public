@@ -11,6 +11,7 @@ services:
       - "8085:80"
     volumes:
       - .:/var/www/html
+      - /var/www/html/vendor
     environment:
       APP_ENV: local
       APP_DEBUG: "true"
