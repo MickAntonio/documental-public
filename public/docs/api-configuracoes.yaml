@@ -17,6 +17,8 @@ servers:
     description: local server
   - url: http://dev.api.documental.kaila.co.ao
     description: development server
+  - url: http://dev.api.documental.kaila.co.ao
+    description: development server
 
 paths:
   /templates:
@@ -582,9 +584,9 @@ components:
       description: This API uses OAuth 2 with the implicit grant flow.
       flows:
         authorizationCode:
-          authorizationUrl: https://dev.api.documental.kaila.co.ao:8081/realms/documental/protocol/openid-connect/auth
+          authorizationUrl: https://16.16.96.8:8081/realms/documental/protocol/openid-connect/auth
           #authorizationUrl: http://localhost:8080/realms/documental/protocol/openid-connect/auth
-          tokenUrl: https://dev.api.documental.kaila.co.ao:8081/realms/documental/protocol/openid-connect/token
+          tokenUrl: https://16.16.96.8:8081/realms/documental/protocol/openid-connect/token
           #tokenUrl: http://localhost:8080/realms/documental/protocol/openid-connect/token
           scopes:
             all: all scopes
