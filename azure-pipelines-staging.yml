@@ -1,0 +1,68 @@
+# PHP
+# Test and package your PHP project.
+# Add steps that run tests, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/php
+
+trigger:
+- staging
+
+
+stages:
+  - stage: CI
+    displayName: Build Artifact
+
+    pool:
+      vmImage: ubuntu-latest
+    variables:
+      phpVersion: 7.2
+    jobs:
+      - job: Build
+        steps:
+        - script: |
+            sudo update-alternatives --set php /usr/bin/php$(phpVersion)
+            sudo update-alternatives --set phar /usr/bin/phar$(phpVersion)
+            sudo update-alternatives --set phpdbg /usr/bin/phpdbg$(phpVersion)
+            sudo update-alternatives --set php-cgi /usr/bin/php-cgi$(phpVersion)
+            sudo update-alternatives --set phar.phar /usr/bin/phar.phar$(phpVersion)
+            php -version
+          displayName: 'Use PHP version $(phpVersion)'
+
+        - script: composer install --no-interaction --prefer-dist
+          displayName: 'composer install'
+
+  - stage: CD
+    displayName: Deploy Artifact to Staging
+
+    dependsOn: CI
+    
+    pool:
+      name: Staging
+    jobs:
+      - job: Release
+        displayName: Release and Deploy
+        steps:
+        - task: PublishPipelineArtifact@1
+          displayName: 'Publish Pipeline Artifact'
+          inputs:
+            artifact: 'artifact-projecto-api'
+
+        - task: DownloadPipelineArtifact@2
+          displayName: 'Download Pipeline Artifact'
+          inputs:
+            artifactName: 'artifact-projecto-api'
+            targetPath: /home/ubuntu/project
+        
+        - bash: |
+            echo 'Hello world'
+            export COMPOSER_ALLOW_SUPERUSER="1"
+            dir
+            cd /home/ubuntu
+            rm -rf project-api
+            rm -rf /var/www/html/app-api
+            mv /home/ubuntu/project/s app-api
+            mv /home/ubuntu/app-api /var/www/html
+            rm -rf project
+            cd /var/www/html/app-api
+            composer install --no-interaction --prefer-dist
+            chmod -R 777 storage
+          displayName: 'Bash Script - move artifact to nginx'

@@ -1,0 +1,186 @@
+openapi: 3.0.3
+info:
+  description: "This is a the base api project of kaila. This documentation is implementend using OpenAPI, you can find out more about\
+    \ Swagger at [http://swagger.io](http://swagger.io) or on [irc.freenode.net, #swagger](http://swagger.io/irc/).\
+  "
+  version: "1.0.6"
+  title: "Base API"
+  termsOfService: "http://swagger.io/terms/"
+  contact:
+    email: "apiteam@swagger.io"
+  license:
+    name: "Apache 2.0"
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+servers:
+  - url: http://localhost:8000
+    description: local server
+  - url: http://dev.api.documental.kaila.co.ao
+    description: development server
+    
+paths:
+  /company:
+    get:
+      tags:
+        - company
+      summary: Returns a list of companies.
+      responses:
+        '200': 
+          description: A JSON array of user names
+          content:
+            application/json:
+              schema: 
+                type: array
+                items: 
+                  type: string
+    post:
+      tags:
+        - company
+      summary: Add a new company to the project
+      description: Add a new company to the project
+      operationId: addCompny
+      requestBody:
+        description: Create a new company in the project
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Company'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/Company'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Company'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Company'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Company'
+        '405':
+          description: Invalid input
+    put:
+      tags:
+        - company
+      summary: Update an existing company
+      description: Update an existing company by Id
+      operationId: updateCompany
+      requestBody:
+        description: Update an existent company in the project
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Company'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/Company'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Company'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Company'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Company'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Company not found
+        '405':
+          description: Validation exception
+    delete:
+      tags:
+        - company
+      summary: Deletes a company
+      description: delete a company
+      operationId: deleteCompany
+      parameters:
+        - name: id
+          in: path
+          description: Company id to delete
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '400':
+          description: Invalid company value
+  /company/{id}:
+    get:
+      tags:
+        - company
+      summary: Find company by ID
+      description: Returns a single company
+      operationId: getCompanyById
+      parameters:
+        - name: id
+          in: path
+          description: ID of company to return
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Company'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Company'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Company not found
+components:
+  schemas:
+    Company:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 10
+        rating:
+          type: integer
+          format: int32
+          example: 7
+        name:
+          type: string
+        status:
+          type: string
+          description: Company Status
+          example: approved
+          enum:
+            - placed
+            - approved
+            - delivered
+        big:
+          type: boolean
+      xml:
+        name: order
+  securitySchemes:
+    identityServer: 
+      type: oauth2
+      description: This API uses OAuth 2 with the implicit grant flow.
+      flows:
+        authorizationCode:
+          authorizationUrl: http://localhost:8080/realms/documental/protocol/openid-connect/auth
+          tokenUrl: http://localhost:8080/realms/documental/protocol/openid-connect/token
+          scopes:
+            all: all scopes
+security: 
+  - identityServer: 
+    - all

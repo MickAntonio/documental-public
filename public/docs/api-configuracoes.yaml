@@ -1,0 +1,593 @@
+openapi: 3.0.3
+info:
+  description:
+    "This is a the base api project of kaila. This documentation is implementend using OpenAPI, you can find out more about\
+    \ Swagger at [http://swagger.io](http://swagger.io) or on [irc.freenode.net, #swagger](http://swagger.io/irc/).\
+    "
+  version: "1.0.6"
+  title: "Swagger Base API"
+  termsOfService: "http://swagger.io/terms/"
+  contact:
+    email: "apiteam@swagger.io"
+  license:
+    name: "Apache 2.0"
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+servers:
+  - url: http://localhost:8000
+    description: local server
+  - url: http://dev.api.documental.kaila.co.ao
+    description: development server
+
+paths:
+  /templates:
+    get:
+      tags:
+        - Templates
+      summary: Returns a list of templates.
+      parameters:
+        - name: nome
+          in: path
+          description: Template name to filter
+          required: false
+          schema:
+            type: string
+        - name: estado
+          in: path
+          description: Template state to filter
+          required: false
+          schema:
+            type: bool
+            enum:
+              - true
+              - false
+        - name: descricao
+          in: path
+          description: Template description to filter
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: A JSON array of templates
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+    post:
+      tags:
+        - Templates
+      summary: Add a new template to the project
+      description: Add a new template to the project
+      operationId: addTemplate
+      requestBody:
+        description: Create a new template in the project
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Template"
+          application/xml:
+            schema:
+              $ref: "#/components/schemas/Template"
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: "#/components/schemas/Template"
+        required: true
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Template"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/Template"
+        "405":
+          description: Invalid input
+    put:
+      tags:
+        - Templates
+      summary: Update an existing template
+      description: Update an existing template by Id
+      operationId: updateTemplate
+      requestBody:
+        description: Update an existent template in the project
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Template"
+          application/xml:
+            schema:
+              $ref: "#/components/schemas/Template"
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: "#/components/schemas/Template"
+        required: true
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Template"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/Template"
+        "400":
+          description: Invalid ID supplied
+        "404":
+          description: Template not found
+        "405":
+          description: Validation exception
+    delete:
+      tags:
+        - Templates
+      summary: Deletes a template
+      description: delete a template
+      operationId: deleteTemplate
+      parameters:
+        - name: id
+          in: path
+          description: Template id to delete
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "400":
+          description: Invalid template value
+  /templates/{id}:
+    get:
+      tags:
+        - Templates
+      summary: Find template by ID
+      description: Returns a single template
+      operationId: getTemplateById
+      parameters:
+        - name: id
+          in: path
+          description: ID of template to return
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Template"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/Template"
+        "400":
+          description: Invalid ID supplied
+        "404":
+          description: Template not found
+
+  /entidades:
+    get:
+      tags:
+        - Entidades
+      summary: Returns a list of entidades.
+      responses:
+        "200":
+          description: A JSON array of user names
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+    post:
+      tags:
+        - Entidades
+      summary: Add a new entidade to the project
+      description: Add a new entidade to the project
+      operationId: addEntidade
+      requestBody:
+        description: Create a new entidade in the project
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Entidade"
+          application/xml:
+            schema:
+              $ref: "#/components/schemas/Entidade"
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: "#/components/schemas/Entidade"
+        required: true
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Entidade"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/Entidade"
+        "405":
+          description: Invalid input
+    put:
+      tags:
+        - Entidades
+      summary: Update an existing entidade
+      description: Update an existing entidade by Id
+      operationId: updateCompany
+      requestBody:
+        description: Update an existent entidade in the project
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Entidade"
+          application/xml:
+            schema:
+              $ref: "#/components/schemas/Entidade"
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: "#/components/schemas/Entidade"
+        required: true
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Entidade"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/Entidade"
+        "400":
+          description: Invalid ID supplied
+        "404":
+          description: Entidade not found
+        "405":
+          description: Validation exception
+    delete:
+      tags:
+        - Entidades
+      summary: Deletes a entidade
+      description: delete a entidade
+      operationId: deleteCompany
+      parameters:
+        - name: id
+          in: path
+          description: Entidade id to delete
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "400":
+          description: Invalid entidade value
+  /entidades/{id}:
+    get:
+      tags:
+        - Entidades
+      summary: Find entidade by ID
+      description: Returns a single entidade
+      operationId: getCompanyById
+      parameters:
+        - name: id
+          in: path
+          description: ID of entidade to return
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Entidade"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/Entidade"
+        "400":
+          description: Invalid ID supplied
+        "404":
+          description: Company not found
+  /entidades-tipo:
+    get:
+      tags:
+        - Tipo de Entidades
+      summary: Returns a list of tipo de entidades.
+      responses:
+        "200":
+          description: A JSON array of user names
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+    post:
+      tags:
+        - Tipo de Entidades
+      summary: Add a new tipo de entidade to the project
+      description: Add a new tipo de entidade to the project
+      operationId: addEntidade
+      requestBody:
+        description: Create a new tipo de entidade in the project
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TipoEntidade"
+          application/xml:
+            schema:
+              $ref: "#/components/schemas/TipoEntidade"
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: "#/components/schemas/TipoEntidade"
+        required: true
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TipoEntidade"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/TipoEntidade"
+        "405":
+          description: Invalid input
+    put:
+      tags:
+        - Tipo de Entidades
+      summary: Update an existing tipo de entidade
+      description: Update an existing tipo de entidade by Id
+      operationId: updateCompany
+      requestBody:
+        description: Update an existent tipo de entidade in the project
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TipoEntidade"
+          application/xml:
+            schema:
+              $ref: "#/components/schemas/TipoEntidade"
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: "#/components/schemas/TipoEntidade"
+        required: true
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TipoEntidade"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/TipoEntidade"
+        "400":
+          description: Invalid ID supplied
+        "404":
+          description: Tipo de Entidade not found
+        "405":
+          description: Validation exception
+    delete:
+      tags:
+        - Tipo de Entidades
+      summary: Deletes a entidade
+      description: delete a tipo de entidade
+      operationId: deleteTipoEntidade
+      parameters:
+        - name: id
+          in: path
+          description: Tipo de Entidade id to delete
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "400":
+          description: Invalid entidade value
+  /entidades-tipo/{id}:
+    get:
+      tags:
+        - Tipo de Entidades
+      summary: Find tipo de entidade by ID
+      description: Returns a single tipo de entidade
+      operationId: getTipoEntidadeById
+      parameters:
+        - name: id
+          in: path
+          description: ID of tipo de entidade to return
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TipoEntidade"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/TipoEntidade"
+        "400":
+          description: Invalid ID supplied
+        "404":
+          description: Tipo de Entidade not found
+  /empresas:
+    put:
+      tags:
+        - Empresas
+      summary: Update an existing Empresa
+      description: Update an existing Empresa by Id
+      operationId: updateEmpresa
+      requestBody:
+        description: Update an existent Empresa in the project
+        content:
+          application/json:
+            schema:
+              
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/Empresa'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Empresa'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Empresa'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Empresa'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Empresa not found
+        '405':
+          description: Validation exception
+  /empresas/{id}:
+    get:
+      tags:
+        - Empresas
+      summary: Find Empresa by ID
+      description: Returns a single Empresa
+      operationId: getEmpresaById
+      parameters:
+        - name: id
+          in: path
+          description: ID of Empresa to return
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Empresa'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Empresa'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Empresa not found
+
+components:
+  schemas:
+    Template:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 0
+        nome:
+          type: string
+          example: teste
+        estado:
+          type: bool
+          enum:
+            - true
+            - false
+        descricao:
+          type: string
+          example: descricaoTeste
+        template:
+          type: string
+          description: Blob image
+          example: blob
+    Entidade:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 0
+        nome:
+          type: string
+        codigo:
+          type: string
+        nif:
+          type: string
+        entidadeTipoId:
+          type: integer
+          format: int64
+        activo:
+          type: integer
+          format: int64
+        endereco:
+          type: string
+        email:
+          type: string
+        telefone:
+          type: string
+      xml:
+        name: order
+    TipoEntidade:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 0
+        nome:
+          type: string
+      xml:
+        name: order
+    Empresa:    
+      type: object
+      properties:
+        nome:
+          type: string
+          example: teste
+        nif:
+          type: string
+          example: teste
+        telefone:
+          type: string
+          example: teste
+        endereco:
+          type: string
+          example: teste
+        email:
+          type: string
+          example: teste@gmail.com
+        dataAbertura:
+          type: date
+          example: 2022-02-0
+        actividadesEconomica:
+          type: string
+          example: teste
+        naturezaJuridica:
+          type: string
+          example: teste
+                    
+  securitySchemes:
+    identityServer:
+      type: oauth2
+      description: This API uses OAuth 2 with the implicit grant flow.
+      flows:
+        authorizationCode:
+          authorizationUrl: https://dev.api.documental.kaila.co.ao:8081/realms/documental/protocol/openid-connect/auth
+          #authorizationUrl: http://localhost:8080/realms/documental/protocol/openid-connect/auth
+          tokenUrl: https://dev.api.documental.kaila.co.ao:8081/realms/documental/protocol/openid-connect/token
+          #tokenUrl: http://localhost:8080/realms/documental/protocol/openid-connect/token
+          scopes:
+            all: all scopes
+security:
+  - identityServer:
+      - all

@@ -1,0 +1,69 @@
+# PHP
+# Test and package your PHP project.
+# Add steps that run tests, save build artifacts, deploy
+# https://docs.microsoft.com/azure/devops/pipelines/languages/php
+
+trigger:
+- develop
+
+
+stages:
+  - stage: CI
+    displayName: Build Artifact
+
+    pool:
+      vmImage: ubuntu-latest
+    variables:
+      phpVersion: 8.0
+    jobs:
+      - job: Build
+        steps:
+        - script: |
+            sudo update-alternatives --set php /usr/bin/php$(phpVersion)
+            sudo update-alternatives --set phar /usr/bin/phar$(phpVersion)
+            sudo update-alternatives --set phpdbg /usr/bin/phpdbg$(phpVersion)
+            sudo update-alternatives --set php-cgi /usr/bin/php-cgi$(phpVersion)
+            sudo update-alternatives --set phar.phar /usr/bin/phar.phar$(phpVersion)
+            php -version
+          displayName: 'Use PHP version $(phpVersion)'
+        
+        - script: |
+            composer install --no-interaction --prefer-dist
+            rm -rf vendor
+          displayName: 'composer install'
+
+        - task: PublishBuildArtifacts@1
+          displayName: 'Publish Artifact app'
+          inputs:
+            PathtoPublish: ./
+            ArtifactName: documental-api-artifact
+
+  - stage: CD
+    displayName: Deploy Artifact to Prod
+
+    dependsOn: CI
+    
+    pool:
+      name: Development
+    jobs:
+      - job: Publish
+        displayName: Download Build and Deploy
+        steps:
+        - task: DownloadBuildArtifacts@1
+          displayName: 'Download Build Artifacts'
+          inputs:
+            buildType: 'current'
+            artifactName: documental-api-artifact
+            downloadPath: /home/ubuntu/projects
+            extractTars: false
+        
+        - bash: |
+            echo 'Moving artifact to nginx directory'
+            rm -rf /var/www/html/dev.api.documental.kaila.co.ao/
+            mv /home/ubuntu/projects/documental-api-artifact /var/www/html/dev.api.documental.kaila.co.ao
+            cd /var/www/html/dev.api.documental.kaila.co.ao
+            composer install --no-interaction --prefer-dist
+            chmod -R 777 storage
+            rm -rf .env && mv .env.dev .env
+            php artisan migrate:fresh --seed
+          displayName: 'Bash Script - move artifact to nginx'

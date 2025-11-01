@@ -1,0 +1,240 @@
+openapi: 3.0.3
+info:
+  description: "This is a the base api project of kaila. This documentation is implementend using OpenAPI, you can find out more about\
+    \ Swagger at [http://swagger.io](http://swagger.io) or on [irc.freenode.net, #swagger](http://swagger.io/irc/).\
+  "
+  version: "1.0.6"
+  title: "Base API"
+  termsOfService: "http://swagger.io/terms/"
+  contact:
+    email: "apiteam@swagger.io"
+  license:
+    name: "Apache 2.0"
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+servers:
+  - url: http://localhost:8000
+    description: local server
+  - url: http://dev.api.documental.kaila.co.ao
+    description: development server
+    
+paths:
+  /admin/users:
+    get:
+      tags:
+        - Users
+      summary: Returns a list of users.
+      responses:
+        '200': 
+          description: A JSON array of users
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/UserDetail'   
+    post:
+      tags:
+        - Users
+      summary: Add a new user to the project
+      description: Add a new user to the project
+      operationId: addUser
+      requestBody:
+        description: Create a new user in the project
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/User'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/User'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/User'
+        '405':
+          description: Invalid input
+    put:
+      tags:
+        - Users
+      summary: Update an existing user
+      description: Update an existing user by Id
+      operationId: updateUser
+      requestBody:
+        description: Create a new user in the project
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/User'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/User'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: User not found
+        '405':
+          description: Validation exception
+    delete:
+      tags:
+        - Users
+      summary: Deletes a user
+      description: delete a user
+      operationId: deleteUser
+      parameters:
+        - name: id
+          in: path
+          description: User id to delete
+          required: true
+          schema:
+            type: string
+      responses:
+        '400':
+          description: Invalid User value
+  /admin/users/{id}:
+    get:
+      tags:
+        - Users
+      summary: Find user by ID
+      description: Returns a single user
+      operationId: getUserById
+      parameters:
+        - name: id
+          in: path
+          description: ID of user to return
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Company not found
+  /admin/groups:
+    get:
+      tags:
+        - Groups
+      summary: Returns a list of groups.
+      responses:
+        '200': 
+          description: A JSON array of groups
+          content:
+            application/json:
+              schema: 
+                type: array
+                items: 
+                  type: string
+  /admin/roles:
+    get:
+      tags:
+        - Roles
+      summary: Returns a list of roles.
+      responses:
+        '200': 
+          description: A JSON array of roles
+          content:
+            application/json:
+              schema: 
+                type: array
+                items: 
+                  type: string
+components:
+  schemas:
+    UserList:
+      type: object
+      properties:
+        data: 
+          type: array
+          items:
+            $ref: '#/components/schemas/User'
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 0
+        username:
+          type: string
+        email:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        phone_number:
+          type: string
+        avatar:
+          type: string
+    UserDetail:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 0
+        username:
+          type: string
+        email:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        createdTimestamp:
+          type: string
+        emailVerified:
+          type: string
+        attributes:
+          type: object
+          properties:
+            locale:
+              type: string
+            phone_number:
+              type: string
+            
+       
+  securitySchemes:
+    identityServer: 
+      type: oauth2
+      description: This API uses OAuth 2 with the implicit grant flow.
+      flows:
+        authorizationCode:
+          authorizationUrl: https://dev.api.documental.kaila.co.ao:8081/realms/documental/protocol/openid-connect/auth
+          #authorizationUrl: http://localhost:8080/realms/documental/protocol/openid-connect/auth
+          tokenUrl: https://dev.api.documental.kaila.co.ao:8081/realms/documental/protocol/openid-connect/token
+          #tokenUrl: http://localhost:8080/realms/documental/protocol/openid-connect/token
+          scopes:
+            all: all scopes
+security: 
+  - identityServer: 
+    - all
