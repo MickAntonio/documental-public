@@ -69,7 +69,6 @@ services:
       KC_DB_PASSWORD: ""
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: admin
-
       KC_PROXY: edge
       KC_HOSTNAME_STRICT_HTTPS: "false"
       KC_HOSTNAME_STRICT: "false"
