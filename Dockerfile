@@ -1,41 +1,86 @@
-FROM composer:2.7 AS build
+version: '3.8'
 
-WORKDIR /app
-COPY . .
-RUN composer install --optimize-autoloader --no-interaction --no-progress
+services:
+  laravel:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: documental-api
+    restart: always
+    ports:
+      - "8085:80"
+    volumes:
+      - .:/var/www/html
+      - /var/www/html/vendor
+    environment:
+      APP_NAME: "Gestão Documental"
+      APP_ENV: local
+      APP_DEBUG: "true"
+      APP_KEY: "base64:voj1iLlkor+s1cm1LcaQPOI5LKVdWAbmOa0rk1ZNNT4="
+      DB_CONNECTION: mysql
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_DATABASE: documental_db
+      DB_USERNAME: root
+      DB_PASSWORD: ""
+    depends_on:
+      - db
+    command: >
+      bash -c "chown -R www-data:www-data storage bootstrap/cache &&
+              chmod -R 775 storage bootstrap/cache &&
+              apache2-foreground"
 
-FROM php:8.2-apache
+  db:
+    image: mysql:8.0
+    container_name: documental-db
+    restart: always
+    environment:
+      MYSQL_DATABASE: documental_db
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+      MYSQL_ROOT_PASSWORD: ""
+    ports:
+      - "3307:3306"
+    volumes:
+      - db_data:/var/lib/mysql
 
-RUN apt-get update && apt-get install -y \
-    libzip-dev \
-    libpng-dev \
-    libxml2-dev \
-    libonig-dev \
-    libjpeg-dev \
-    libfreetype6-dev \
-    unzip \
-    && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install gd pdo pdo_mysql zip \
-    apt-get install -y openssl && \
-    mkdir -p /opt/keycloak/certs && \
-    openssl req -x509 -newkey rsa:2048 -nodes \
-      -keyout /opt/keycloak/certs/server.key \
-      -out /opt/keycloak/certs/server.crt \
-      -days 365 \
-      -subj "/CN=localhost"
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: documental-phpmyadmin
+    restart: always
+    depends_on:
+      - db
+    ports:
+      - "8086:80"
+    environment:
+      PMA_HOST: db
+      PMA_USER: root
+      PMA_PASSWORD: 
+      PMA_ARBITRARY: 1
 
-RUN a2enmod rewrite
+  keycloak:
+    image: quay.io/keycloak/keycloak:24.0.5-0
+    container_name: documental-keycloak
+    restart: always
+    environment:
+      KC_DB: mysql
+      KC_DB_URL_HOST: db
+      KC_DB_URL_DATABASE: documental_db
+      KC_DB_USERNAME: root
+      KC_DB_PASSWORD: ""
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+      # Enable HTTPS
+      KC_HTTPS_CERTIFICATE_FILE: /opt/keycloak/certs/server.crt
+      KC_HTTPS_CERTIFICATE_KEY_FILE: /opt/keycloak/certs/server.key
+      KC_PROXY: edge
+    command:
+      - start-dev
+    ports:
+      - "8087:8080"
+    depends_on:
+      - db
+    volumes:
+      - ./keycloak-cert:/opt/keycloak/certs
 
-# Definir o DocumentRoot para /public
-ENV APACHE_DOCUMENT_ROOT /var/www/html/public
-RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/000-default.conf /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
-
-COPY --from=build /app /var/www/html
-
-WORKDIR /var/www/html
-
-RUN chown -R www-data:www-data storage bootstrap/cache
-
-EXPOSE 80
-
-CMD ["apache2-foreground"]
+volumes:
+  db_data:
