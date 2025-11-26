@@ -28,7 +28,7 @@ services:
       REALM_ADMIN_USER: "user"
       REALM__ADMIN_PASSWORD: "1234"
       REALM_CLIENT_ID: "documental-client"
-      REALM_BASE_URL: "https://16.16.96.8:8081"
+      REALM_BASE_URL: "https://13.49.148.13:8081"
     depends_on:
       - db
     command: >
